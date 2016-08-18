@@ -1,4 +1,4 @@
-# Strict python
+# Strict Python
 
 Strict python - adds checkers on input and output for python programs.
 
@@ -6,13 +6,14 @@ How do we do this? Idea is easy - when you write a docstring for a python functi
 
 It's can be useful for **web development**. When we have incoming request - we need to make basic data validation on incoming data from user. If data doesn't much the described structure - we need to refuse access to this page and show error. 
 
-Small example:
+### Small example
+
 ```python
 # Assume it's Django function in views.py that handles
 # user request and returns response.
 
 @strict
-def show_user(request):
+def show_user(request, response_format='HTML'):
   """Shows information about the given user.
 
   Args:
@@ -23,11 +24,11 @@ def show_user(request):
           options: optional dict. Additional options.
             {
               additional_fields: optional list of integers.
-              response_format: str choice from ["JSON", "HTML", "XML"]. In which format
-                we need to return data.
             }
           welcome_phrase: optionsl str. Any string that will be printed before user name.
         }
+    response_format: str, choice from ["JSON", "HTML", "XML"]. In which format
+                     we need to return data.
 
   Returns:
     HttpResponse. It can be JSON/HTML/XML document inside the object.
@@ -37,5 +38,7 @@ def show_user(request):
   welcome_phrase = request.POST.get('welcome_phrase')
   if not welcome_phrase:
     welcome_phrase = "Hello"
-  return HttpResponse('{} {}!'.format(welcome_phrase, user.username))
+  
+  data = {'welcome_phrase': welcome_phrase, 'username': user.username}
+  return render_response(data, response_format)
 ```
